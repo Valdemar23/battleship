@@ -22,9 +22,9 @@ var model={//включає в себе позиції кораблів, коо�
 	shipsSunk:0,
 	shipLength:3,
 	ships:[
-		{locations:["","",""],hits:["","",""],occ:[]},//have arrays in properties "ships"
-		{locations:["","",""],hits:["","",""],occ:[]},
-		{locations:["","",""],hits:["","",""],occ:[]}],
+		{locations:[this.shipLength],hits:[this.shipLength],occ:[]},//have arrays in properties "ships"
+		{locations:[this.shipLength],hits:[this.shipLength],occ:[]},
+		{locations:[this.shipLength],hits:[this.shipLength],occ:[]}],
 	
 	fire: function(guess){
 		for(var i=0;i<this.numShips;i++){
@@ -62,6 +62,7 @@ var model={//включає в себе позиції кораблів, коо�
 				locations=this.generateShip();
 			}while(this.collision(locations));
 			this.ships[i].locations=locations;
+			//this.ship[i].occ.;
 		}
 	},
 	generateShip: function(){
@@ -83,6 +84,9 @@ var model={//включає в себе позиції кораблів, коо�
 			}else{
 				newShipLocations.push((row+i)+""+col);
 			}
+			/*if(i==1){
+
+			}*/
 		}
 		return newShipLocations;
 	},
