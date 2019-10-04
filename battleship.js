@@ -13,6 +13,16 @@ var view={//file battleship_tester.js
 		var cellMiss=document.getElementById(location);
 		if(cellMiss!=null)
 		cellMiss.setAttribute("class","miss");
+	},
+
+	displayOccupation:function(location){
+		var cell=document.getElementById(location);
+		var hit=cell.getAttribute("hit");
+		var miss=cell.getAttribute("miss");
+		if(!cell.classList.contains("hit")&&!cell.classList.contains("miss")){
+			cell.setAttribute("class","occ");
+		}
+
 	}
 };
 
@@ -37,6 +47,7 @@ var model={//включає в себе позиції кораблів, коо�
 				if(this.isSunk(ship)){
 					view.displayMessage("You sank my battleship!");
 					this.shipsSunk++;
+					this.insertOccupationCells(ship);
 				}
 				return true;
 			}
@@ -55,14 +66,15 @@ var model={//включає в себе позиції кораблів, коо�
 		return true;
 	},
 
-	generateShipLocations: function(){
+	generateShipLocations: function(){//
 		var locations;
 		for(var i=0;i<this.numShips;i++){
 			do{
 				locations=this.generateShip();
 			}while(this.collision(locations));
 			this.ships[i].locations=locations;
-			//this.ship[i].occ.;
+			console.log(this.ships[i].locations);
+			//this.insertOccupationCells(this.ships[i]);
 		}
 	},
 	generateShip: function(){
@@ -79,28 +91,70 @@ var model={//включає в себе позиції кораблів, коо�
 
 		var newShipLocations=[];
 		for(var i=0;i<this.shipLength;i++){
-			if(direction===1){
+			if(direction===1){//vertical
 				newShipLocations.push(row+""+(col+i));
-			}else{
+			}else{//horizontal
 				newShipLocations.push((row+i)+""+col);
 			}
-			/*if(i==1){
-
-			}*/
 		}
 		return newShipLocations;
 	},
 	collision:function(locations){
 		for(var i=0;i<this.numShips;i++){
 			var ship=this.ships[i];
-			for(var j=0;j<locations.length;j++){
+			for(var j=0,k=0;j<ship.locations.length,k<ship.occ.length;j++,k++){
 				if(ship.locations.indexOf(locations[j])>=0){//типу якщо генеруєма локація співпадає з локацією кораблика
 					return true;//то буде продовжуватись цикл генерації локації кораблика
 				}
 			}
 		}
 		return false;
-	}
+	},
+	insertOccupationCells:function(ship){
+		for(var j=0;j<ship.locations.length;j++){
+			if(Number(ship.locations[j].charAt(0))!==0){//A FIELD
+				ship.occ.push(Number(ship.locations[j] - 10));//top side
+			}
+
+			if(Number(ship.locations[j].charAt(1))!==0){//0 FIELD
+				ship.occ.push(Number(ship.locations[j]-1));
+			}
+
+			if(Number(ship.locations[j].charAt(0))!==(this.boardSize-1)){//G FIELD
+				ship.occ.push(Number(ship.locations[j]) + 10);//top side
+			}
+			
+			if(Number(ship.locations[j].charAt(1))!==(this.boardSize-1)){//N-BOARDSIZE FIELD
+				ship.occ.push(Number(ship.locations[j])+1);
+			}
+
+			if(Number(ship.locations[j].charAt(0))!==0 && Number(ship.locations[j].charAt(1))!==0){//A && 0
+				ship.occ.push(Number(ship.locations[j] - 11));//9
+			}
+
+			if(Number(ship.locations[j].charAt(0))!==0 && Number(ship.locations[j].charAt(1))!==(this.boardSize-1)){//A && N-BOARDSIZE FIELD
+				ship.occ.push(Number(ship.locations[j] -9));//11
+			}
+			
+			if(Number(ship.locations[j].charAt(0))!==(this.boardSize-1) && Number(ship.locations[j].charAt(1))!==0){//G && 0
+				ship.occ.push(Number(ship.locations[j]) +9);
+			}
+
+			if(Number(ship.locations[j].charAt(0))!==(this.boardSize-1) && Number(ship.locations[j].charAt(1))!==(this.boardSize-1)){//A && N-BOARDSIZE FIELD
+				ship.occ.push(Number(ship.locations[j]) +11);
+			}
+		}
+
+		for(var i=0;i<ship.occ.length;i++){
+			var str=String(ship.occ[i]);
+			if(str.length==1){
+				ship.occ[i]="0"+ship.occ[i];
+			}
+			view.displayOccupation(ship.occ[i]);
+			console.log(i+") occ="+ship.occ[i]);
+		}
+
+	},
 };
 
 var controller={
@@ -108,6 +162,7 @@ var controller={
 
 	proccessGuess:function(guess){
 		var location=this.parseGuess(guess);
+
 		if(location){
 			this.guesses++;
 			var hit=model.fire(location);
@@ -117,6 +172,8 @@ var controller={
 				form.remove();
 			}
 		}
+
+		
 	},
 	parseGuess: function(guess){
 		var alphabet=["A","B","C","D","E","F","G"];
@@ -162,6 +219,6 @@ function init(){
 	
 	var guessInput=document.getElementById("guessInput");//додаємо новий обробник для обробки натиснення на клавішу в поле вводу HTML
 	guessInput.onkeypress=handleKeyPress;
-
+	
 	model.generateShipLocations();
 }
