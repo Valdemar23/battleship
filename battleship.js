@@ -13,7 +13,7 @@ var view={//file battleship_tester.js
 
 	displayMiss: function(location){
 		var cellMiss=document.getElementById(location);
-		if(cellMiss!=null)
+		if(cellMiss!=null&&!cellMiss.classList.contains("occ"))
 		cellMiss.setAttribute("class","miss");
 	},
 
@@ -62,7 +62,10 @@ var model={//включає в себе позиції кораблів, коо�
 				if(this.isSunk(ship)){
 					view.displayMessage("You sank my battleship!");
 					this.shipsSunk++;
-					this.insertOccupationCells(ship);
+					for(var j=0;j<ship.occ.length;j++){
+						view.displayOccupation(ship.occ[j]);
+					}
+					
 				}
 				return true;
 			}
@@ -90,7 +93,10 @@ var model={//включає в себе позиції кораблів, коо�
 			}while(this.collision(locations));
 			this.ships[i].locations=locations;
 			console.log(this.ships[i].locations);
-			//this.insertOccupationCells(this.ships[i]);
+			this.insertOccupationCells(this.ships[i]);
+
+			//view.displayHit(this.ships[i].locations);
+
 		}
 	},
 	generateShip: function(){
@@ -166,8 +172,8 @@ var model={//включає в себе позиції кораблів, коо�
 			if(str.length==1){
 				ship.occ[i]="0"+ship.occ[i];
 			}
-			view.displayOccupation(ship.occ[i]);
-			console.log(i+") occ="+ship.occ[i]);
+			/*view.displayOccupation(ship.occ[i]);
+			console.log(i+") occ="+ship.occ[i]);*/
 		}
 
 	},
@@ -241,7 +247,7 @@ function handleKeyPress(e){//короч для спрацьовування пр
 window.onload=init;
 function init(){
 	var td=document.getElementsByTagName("td");//даний метод повертає об'єкт типу NodeList
-	for(var i=0;i<td.length;i++){
+	for(var i=0;i<td.length;i++){//mouse action events
 		td[i].onmouseover=view.displayMouseOver;//подія при наведені мишкою на image
 		td[i].onmouseout=view.displayMouseOut;//подія при відведенні миші від image
 		td[i].onclick=controller.proccessGuess;
