@@ -125,10 +125,18 @@ var model={//включає в себе позиції кораблів, коо�
 		for(var i=0;i<this.numShips;i++){
 			var ship=this.ships[i];
 			for(var j=0;j<ship.locations.length;j++){
-				if(ship.locations.indexOf(locations[j])>=0){//типу якщо генеруєма локація співпадає з локацією кораблика
+				//console.log(ship.occ);
+				if(ship.occ.indexOf(locations[j])>=0){//типу якщо генеруєма локація співпадає з локацією кораблика
 					return true;//то буде продовжуватись цикл генерації локації кораблика
 				}
+				/*else{
+					console.log(ship.occ);
+				}*/
 			}
+			/*for(var j=0;j<ship.occ.length;j++){
+				if(ship.occ[j].indexOf(locations)
+					return true;
+			}*/
 		}
 		return false;
 	},
@@ -171,6 +179,8 @@ var model={//включає в себе позиції кораблів, коо�
 			var str=String(ship.occ[i]);
 			if(str.length==1){
 				ship.occ[i]="0"+ship.occ[i];
+			}else{
+				ship.occ[i]=String(ship.occ[i]);
 			}
 			/*view.displayOccupation(ship.occ[i]);
 			console.log(i+") occ="+ship.occ[i]);*/
