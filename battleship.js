@@ -1,4 +1,5 @@
 var view={//file battleship_tester.js
+
 	displayMessage: function(msg){
 		var messageArea=document.getElementById("messageArea");
 		messageArea.innerHTML=msg;
@@ -7,6 +8,7 @@ var view={//file battleship_tester.js
 	displayHit: function(location){
 		var cellHit=document.getElementById(location);
 		cellHit.setAttribute("class","hit");
+		//cellHit.removeAttribute("id");
 	},
 
 	displayMiss: function(location){
@@ -16,13 +18,26 @@ var view={//file battleship_tester.js
 	},
 
 	displayOccupation:function(location){
-		var cell=document.getElementById(location);
+		var cell=document.getElementById(location); 
 		var hit=cell.getAttribute("hit");
 		var miss=cell.getAttribute("miss");
-		if(!cell.classList.contains("hit")&&!cell.classList.contains("miss")){
+		if(!cell.classList.contains("hit")&&!cell.classList.contains("miss")){//перевірка на належність комірки до одного з класів
 			cell.setAttribute("class","occ");
 		}
+	},
 
+	displayMouseOver:function(eventObj){
+		var td=eventObj.target;
+		//console.log(td);
+		if(!td.classList.contains("hit")&&!td.classList.contains("miss")&&!td.classList.contains("occ"))
+		td.setAttribute("class","mouseover");
+	},
+
+	displayMouseOut:function(eventObj){
+		var td=eventObj.target;
+		//console.log(td);
+		if(td.classList.contains("mouseover"))
+		td.setAttribute("class","");
 	}
 };
 
@@ -55,6 +70,7 @@ var model={//включає в себе позиції кораблів, коо�
 		view.displayMiss(guess);
 		view.displayMessage("You missed.");
 		
+
 		return false;
 	},
 	isSunk: function(ship){
@@ -102,7 +118,7 @@ var model={//включає в себе позиції кораблів, коо�
 	collision:function(locations){
 		for(var i=0;i<this.numShips;i++){
 			var ship=this.ships[i];
-			for(var j=0,k=0;j<ship.locations.length,k<ship.occ.length;j++,k++){
+			for(var j=0;j<ship.locations.length;j++){
 				if(ship.locations.indexOf(locations[j])>=0){//типу якщо генеруєма локація співпадає з локацією кораблика
 					return true;//то буде продовжуватись цикл генерації локації кораблика
 				}
@@ -161,21 +177,30 @@ var controller={
 	guesses:0,
 
 	proccessGuess:function(guess){
-		var location=this.parseGuess(guess);
+		var location;
+		if(guess.target==null){
+			console.log("kek");
+			location=this.parseGuess(guess);
+		}else{
+			console.log("lol");
+		 	//location=guess.target;
+		 	location=guess.target.id;
+		}
 
 		if(location){
-			this.guesses++;
+			
 			var hit=model.fire(location);
+
+			this.guesses++;
 			if(hit&&model.shipsSunk===model.numShips){
 				view.displayMessage("You sank all my battleship, in "+this.guesses+" guesses");
 				var form=document.getElementById("form");
 				form.remove();
+				//block mouse
 			}
-		}
-
-		
+		}		
 	},
-	parseGuess: function(guess){
+	parseGuess: function(guess){//mouse clicker need
 		var alphabet=["A","B","C","D","E","F","G"];
 
 		if(guess===null||guess.length!==2){//перевірка на строгу рівність
@@ -190,6 +215,7 @@ var controller={
 			}else if(row<0||row>=model.boardSize||column<0||column>=model.boardSize){
 				alert("Oops, that's of the board!");
 			}else{
+				//console.log(row+column);
 				return row+column;//row - is number, column - is string, in result we have string becouse doing concatinate
 			}
 		}
@@ -209,11 +235,17 @@ function handleKeyPress(e){//короч для спрацьовування пр
 	if(e.keyCode===13){//при натисненні клавіші Enter
 		fireButton.click();//імітація натиснення кнопки
 		return false;//щоб функція не робила нічого лишнього
-	}
+	}	
 }
 
 window.onload=init;
 function init(){
+	var td=document.getElementsByTagName("td");//даний метод повертає об'єкт типу NodeList
+	for(var i=0;i<td.length;i++){
+		td[i].onmouseover=view.displayMouseOver;//подія при наведені мишкою на image
+		td[i].onmouseout=view.displayMouseOut;//подія при відведенні миші від image
+		td[i].onclick=controller.proccessGuess;
+	}
 	var fireButton=document.getElementById("fireButton");
 	fireButton.onclick=handleFireButton;//викликаємо функцію при натисненні на кнопку
 	
