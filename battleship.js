@@ -62,6 +62,7 @@ var model={//включає в себе позиції кораблів, коо�
 				if(this.isSunk(ship)){
 					view.displayMessage("You sank my battleship!");
 					this.shipsSunk++;
+
 					for(var j=0;j<ship.occ.length;j++){
 						view.displayOccupation(ship.occ[j]);
 					}
@@ -125,18 +126,10 @@ var model={//включає в себе позиції кораблів, коо�
 		for(var i=0;i<this.numShips;i++){
 			var ship=this.ships[i];
 			for(var j=0;j<ship.locations.length;j++){
-				//console.log(ship.occ);
 				if(ship.occ.indexOf(locations[j])>=0){//типу якщо генеруєма локація співпадає з локацією кораблика
 					return true;//то буде продовжуватись цикл генерації локації кораблика
 				}
-				/*else{
-					console.log(ship.occ);
-				}*/
 			}
-			/*for(var j=0;j<ship.occ.length;j++){
-				if(ship.occ[j].indexOf(locations)
-					return true;
-			}*/
 		}
 		return false;
 	},
@@ -182,8 +175,6 @@ var model={//включає в себе позиції кораблів, коо�
 			}else{
 				ship.occ[i]=String(ship.occ[i]);
 			}
-			/*view.displayOccupation(ship.occ[i]);
-			console.log(i+") occ="+ship.occ[i]);*/
 		}
 
 	},
@@ -193,25 +184,25 @@ var controller={
 	guesses:0,
 
 	proccessGuess:function(guess){
-		var location;
+		var location=0;
 		if(guess.target==null){
-			console.log("kek");
 			location=this.parseGuess(guess);
 		}else{
-			console.log("lol");
-		 	//location=guess.target;
 		 	location=guess.target.id;
 		}
 
 		if(location){
-			
+			//console.log(this.guesses);
+			this.guesses++;
 			var hit=model.fire(location);
 
-			this.guesses++;
+			console.log(this.guesses);
 			if(hit&&model.shipsSunk===model.numShips){
 				view.displayMessage("You sank all my battleship, in "+this.guesses+" guesses");
-				var form=document.getElementById("form");
-				form.remove();
+				var form=document.getElementById("winMessage");
+				var board=document.getElementById("board");
+				board.remove();
+				form.innerHTML="YOU WIN";
 				//block mouse
 			}
 		}		

@@ -49,3 +49,11 @@ form input{
 .mouseover{
 	background: url(img/iconfinder_abstract_symbol-11_1571977.png) no-repeat center center;
 }
+#winMessage{
+	/* width:50%;
+	height:50%; */
+	text-align: justify;
+	font-size: 120px;
+	color: green;
+	display: inline-block;
+}
