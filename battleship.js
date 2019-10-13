@@ -1,5 +1,5 @@
+var finish=true;
 var view={//file battleship_tester.js
-
 	displayMessage: function(msg){
 		var messageArea=document.getElementById("messageArea");
 		messageArea.innerHTML=msg;
@@ -65,8 +65,7 @@ var model={//включає в себе позиції кораблів, коо�
 
 					for(var j=0;j<ship.occ.length;j++){
 						view.displayOccupation(ship.occ[j]);
-					}
-					
+					}				
 				}
 				return true;
 			}
@@ -198,12 +197,17 @@ var controller={
 
 			console.log(this.guesses);
 			if(hit&&model.shipsSunk===model.numShips){
-				view.displayMessage("You sank all my battleship, in "+this.guesses+" guesses");
-				var form=document.getElementById("winMessage");
+				view.displayMessage("YOU WIN");//You sank all my battleship, in "+this.guesses+" guesses
+				var form=document.getElementById("form");
 				var board=document.getElementById("board");
-				board.remove();
-				form.innerHTML="YOU WIN";
+				board.style.display="block";
+				//board.remove();
+				form.remove();
+
+				finish=false;
 				//block mouse
+				//b.remove();
+				//board.setAttribute("class","elemt");
 			}
 		}		
 	},
@@ -245,13 +249,14 @@ function handleKeyPress(e){//короч для спрацьовування пр
 	}	
 }
 
-window.onload=init;
-function init(){
-	var td=document.getElementsByTagName("td");//даний метод повертає об'єкт типу NodeList
-	for(var i=0;i<td.length;i++){//mouse action events
-		td[i].onmouseover=view.displayMouseOver;//подія при наведені мишкою на image
-		td[i].onmouseout=view.displayMouseOut;//подія при відведенні миші від image
-		td[i].onclick=controller.proccessGuess;
+window.onload=function(){
+	if(finish){
+		var td=document.getElementsByTagName("td");//даний метод повертає об'єкт типу NodeList
+		for(var i=0;i<td.length;i++){//mouse action events
+			td[i].onmouseover=view.displayMouseOver;//подія при наведені мишкою на image
+			td[i].onmouseout=view.displayMouseOut;//подія при відведенні миші від image
+			td[i].onclick=controller.proccessGuess;
+		}
 	}
 	var fireButton=document.getElementById("fireButton");
 	fireButton.onclick=handleFireButton;//викликаємо функцію при натисненні на кнопку
