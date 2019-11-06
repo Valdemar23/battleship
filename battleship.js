@@ -234,21 +234,6 @@ var controller={
 	}
 };
 
-function handleFireButton(){
-	var guessInput=document.getElementById("guessInput");//отрмуємо елемент поля вводу
-	var guess=guessInput.value;//зчитуємо дані з текстового поля для вводу
-	controller.proccessGuess(guess);
-	guessInput.value="";//очищуємо поле вводу в браузері
-}
-
-function handleKeyPress(e){//короч для спрацьовування при натисненні Enter
-	var fireButton=document.getElementById("fireButton");
-	if(e.keyCode===13){//при натисненні клавіші Enter
-		fireButton.click();//імітація натиснення кнопки
-		return false;//щоб функція не робила нічого лишнього
-	}	
-}
-
 window.onload=function(){
 	if(finish){
 		var td=document.getElementsByTagName("td");//даний метод повертає об'єкт типу NodeList
@@ -259,10 +244,21 @@ window.onload=function(){
 		}
 	}
 	var fireButton=document.getElementById("fireButton");
-	fireButton.onclick=handleFireButton;//викликаємо функцію при натисненні на кнопку
+	fireButton.onclick=function(){
+		var guessInput=document.getElementById("guessInput");//отрмуємо елемент поля вводу
+		var guess=guessInput.value;//зчитуємо дані з текстового поля для вводу
+		controller.proccessGuess(guess);
+		guessInput.value="";//очищуємо поле вводу в браузері
+	};//викликаємо функцію при натисненні на кнопку
 	
 	var guessInput=document.getElementById("guessInput");//додаємо новий обробник для обробки натиснення на клавішу в поле вводу HTML
-	guessInput.onkeypress=handleKeyPress;
+	guessInput.onkeypress=function(){//короч для спрацьовування при натисненні Enter
+		//var fireButton=document.getElementById("fireButton");
+		if(e.keyCode===13){//при натисненні клавіші Enter
+			fireButton.click();//імітація натиснення кнопки
+			return false;//щоб функція не робила нічого лишнього
+		}	
+	};
 	
 	model.generateShipLocations();
 }
