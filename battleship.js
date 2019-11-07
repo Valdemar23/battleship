@@ -24,20 +24,6 @@ var view={//file battleship_tester.js
 		if(!cell.classList.contains("hit")&&!cell.classList.contains("miss")){//перевірка на належність комірки до одного з класів
 			cell.setAttribute("class","occ");
 		}
-	},
-
-	displayMouseOver:function(eventObj){
-		var td=eventObj.target;
-		//console.log(td);
-		if(!td.classList.contains("hit")&&!td.classList.contains("miss")&&!td.classList.contains("occ"))
-		td.setAttribute("class","mouseover");
-	},
-
-	displayMouseOut:function(eventObj){
-		var td=eventObj.target;
-		//console.log(td);
-		if(td.classList.contains("mouseover"))
-		td.setAttribute("class","");
 	}
 };
 
@@ -175,8 +161,7 @@ var model={//включає в себе позиції кораблів, коо�
 				ship.occ[i]=String(ship.occ[i]);
 			}
 		}
-
-	},
+	}
 };
 
 var controller={
@@ -238,8 +223,16 @@ window.onload=function(){
 	if(finish){
 		var td=document.getElementsByTagName("td");//даний метод повертає об'єкт типу NodeList
 		for(var i=0;i<td.length;i++){//mouse action events
-			td[i].onmouseover=view.displayMouseOver;//подія при наведені мишкою на image
-			td[i].onmouseout=view.displayMouseOut;//подія при відведенні миші від image
+			td[i].onmouseover=function(eventObj){
+				var td=eventObj.target;
+				if(!td.classList.contains("hit")&&!td.classList.contains("miss")&&!td.classList.contains("occ"))
+				td.setAttribute("class","mouseover");
+			};//подія при наведені мишкою на image
+			td[i].onmouseout=function(eventObj){
+				var td=eventObj.target;
+				if(td.classList.contains("mouseover"))
+				td.setAttribute("class","");
+			};//подія при відведенні миші від image
 			td[i].onclick=controller.proccessGuess;
 		}
 	}
