@@ -252,7 +252,7 @@ window.onload=function(){
 	};//викликаємо функцію при натисненні на кнопку
 	
 	var guessInput=document.getElementById("guessInput");//додаємо новий обробник для обробки натиснення на клавішу в поле вводу HTML
-	guessInput.onkeypress=function(){//короч для спрацьовування при натисненні Enter
+	guessInput.onkeypress=function(e){//короч для спрацьовування при натисненні Enter
 		//var fireButton=document.getElementById("fireButton");
 		if(e.keyCode===13){//при натисненні клавіші Enter
 			fireButton.click();//імітація натиснення кнопки
